@@ -7,7 +7,7 @@
 
 {% block content %}
 {% load crispy_forms_tags %}
-<div class="container">
+<div class="p-3">
     <div class="card card-info mx-4 my-4">
         <div class="card-header">
             <h1 class="card-title">AGREGAR PRODUCTO</h1>
@@ -17,7 +17,41 @@
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12 col-lg-6">
-                        {{ form | crispy}}
+                        <div class="row">                
+                            <div class="col-12 col-lg-5">
+                                {{ form.codigo|as_crispy_field }}
+                            </div>
+                            <div class="col-12 col-lg-7">
+                                
+                            </div>
+                            <div class="col-12">
+                                {{ form.categoria|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.nombre|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.descripcion|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.marca|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.modelo|as_crispy_field }}
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                {{ form.stock|as_crispy_field }}
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                {{ form.precioUnitario|as_crispy_field }}
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                {{ form.urlImagen|as_crispy_field }}
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                {{ form.nombreImagen|as_crispy_field }}
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="col-12 col-lg-6 pb-2">
@@ -40,10 +74,6 @@
                         
                     </div>
                 </div>  
-                
-                
-                
-
                 <div class="d-flex justify-content-end">
                     <a href="{% url 'listarproducto' %}" class="btn btn-secondary">Cancelar</a> &nbsp;
                     <button type="submit" class="btn btn-primary">Guardar</button>
@@ -94,9 +124,10 @@
             const fecha = new Date();
 
             const loader =  document.getElementById('loader');
-            const storageRef = ref(storage, 'django/' + file.name + fecha.getTime());
-            const uploadTask = uploadBytesResumable(storageRef, file);
             
+            const storageRef = ref(storage, 'django/' + fecha.getTime()+ file.name);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
             // Listen for state changes, errors, and completion of the upload.
             uploadTask.on('state_changed',
                 (snapshot) => {
@@ -137,6 +168,9 @@
                         imagen.classList.remove("d-none");
                         console.log('File Updated ', downloadURL);
                         imagen.setAttribute('src',downloadURL); 
+                
+                        document.getElementById("id_urlImagen").value = downloadURL;
+                        document.getElementById("id_nombreImagen").value = file.name;
                     });
                 }
             );

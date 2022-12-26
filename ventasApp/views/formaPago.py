@@ -5,12 +5,25 @@ from django.db.models import Q
 from ventasApp.forms import FormaPagoForm
 from django.contrib import messages
 from django.core.paginator import Paginator
+import datetime
 # Create your views here.
 def agregarformaPago(request):
     if request.method=="POST":
         form=FormaPagoForm(request.POST)
         if form.is_valid():
-            return redirect("listarformaPago") 
+            descripcion_formaPago = form.cleaned_data.get("descripcion")
+            formaPago_exits = (FormaPago.objects.filter(descripcion=descripcion_formaPago).count()>0)
+            if formaPago_exits:
+                form=FormaPagoForm()
+                context={'form':form} 
+                return render(request,"formaPago/agregar.html",context)  
+            else:
+                messages.success(request, "Forma de pago registrada.")
+                form.save() 
+                element = FormaPago.objects.all().last()
+                element.usuarioRegistro =  request.session['user_logged']
+                element.save()
+                return redirect("listarformaPago") 
 
     else:
         form=FormaPagoForm()
@@ -36,6 +49,10 @@ def editarformaPago(request,id):
         if form.is_valid():
             messages.success(request, "Cliente actualizado.")
             form.save() 
+            elemento=FormaPago.objects.get(idFormaPago=id)
+            elemento.usuarioModificacion = request.session['user_logged']
+            elemento.fechaModificacion = datetime.datetime.now()
+            elemento.save()
             return redirect("listarformaPago") 
     else:
         form=FormaPagoForm(instance=formaPago)
@@ -46,6 +63,8 @@ def eliminarformaPago(request,id):
     formaPago=FormaPago.objects.get(idFormaPago=id) 
     formaPago.activo=False
     formaPago.eliminado=True
+    formaPago.usuarioEliminacion = request.session['user_logged']
+    formaPago.fechaEliminacion = datetime.datetime.now()
     formaPago.save()
     messages.success(request, "FormaPago eliminada.")
     return redirect("listarformaPago")

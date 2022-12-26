@@ -2,7 +2,7 @@
 {% block title %} Boutique | Producto {% endblock title %}
 
 {% block content %}
-    <div class="container">
+    <div class="p-3">
         <div class="card mt-3">
         <div class="card-header d-flex justify-content-between p-3">
             <div>
@@ -46,7 +46,7 @@
                 {% for itemproducto in page_obj %}
                 <tr>
                     <td>{{ itemproducto.idProducto}}</td>
-                    <td>{{ itemproducto.descripcion }}</td>
+                    <td>{{ itemproducto.codigo }}</td>
                     <td>{{itemproducto.nombre}}</td>
                     <td>{{itemproducto.descripcion}}</td>
                     <td>{{itemproducto.marca}}</td>
